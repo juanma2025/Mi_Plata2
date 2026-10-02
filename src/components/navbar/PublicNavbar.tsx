@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { useAuthStore } from '../../store/useAuthStore';
-import { Moon, Sun, Monitor } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 
 export function PublicNavbar() {
