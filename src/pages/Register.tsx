@@ -13,7 +13,7 @@ export function Register() {
   const login = useAuthStore(state => state.login);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password) {
       toast.error('Por favor, completa todos los campos.');
@@ -21,13 +21,36 @@ export function Register() {
     }
     
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { authService } = await import('../services/api');
+      const response = await authService.post('/auth/register', { name, email, password });
+      
+      if (response.success) {
+        const { user: authUser, session } = response.data;
+        
+        if (session?.access_token) {
+          localStorage.setItem('access_token', session.access_token);
+        }
+
+        // On register, onboarding_completed is false by default
+        login({ 
+          id: authUser.id, 
+          name: authUser.name, 
+          email: authUser.email, 
+          initials: authUser.name?.substring(0,2).toUpperCase() || 'US',
+          onboarding_completed: false
+        });
+        
+        toast.success('Cuenta creada exitosamente');
+        navigate('/app/onboarding');
+      } else {
+        toast.error(response.error || 'Error al crear la cuenta');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Error de conexión');
+    } finally {
       setIsLoading(false);
-      login({ name, email, initials: name.substring(0, 2).toUpperCase() });
-      toast.success('Cuenta creada exitosamente');
-      navigate('/app');
-    }, 1500);
+    }
   };
 
   return (

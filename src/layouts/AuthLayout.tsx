@@ -28,7 +28,10 @@ export function AuthLayout() {
           <h1 className="text-5xl font-extrabold mb-6 leading-tight">Empieza a controlar tu <br/>futuro financiero hoy.</h1>
           <p className="text-[var(--muted)] text-xl max-w-md leading-relaxed">Únete a miles de personas que han mejorado su relación con el dinero gracias a herramientas inteligentes.</p>
         </div>
-        <div className="text-sm text-[var(--muted)] relative z-10">© 2026 Plata. Todos los derechos reservados.</div>
+        <div className="text-sm text-[var(--muted)] relative z-10 flex flex-col gap-1">
+          <span>© 2026 Plata. Todos los derechos reservados.</span>
+          <span>Desarrollado por Alejandra Velasquez - v1.0.1</span>
+        </div>
       </div>
       
       {/* Form side */}

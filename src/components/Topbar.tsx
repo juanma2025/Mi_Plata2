@@ -2,9 +2,21 @@ import { Search, Bell } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLocation } from 'react-router-dom';
 
-const getPageInfo = (pathname: string) => {
+const getGreeting = (name: string) => {
+  const hour = new Date().getHours();
+  let greeting = 'Buenas noches';
+  if (hour >= 5 && hour < 12) greeting = 'Buenos días';
+  else if (hour >= 12 && hour < 19) greeting = 'Buenas tardes';
+  
+  const firstName = name.split(' ')[0] || 'Usuario';
+  return `${greeting}, ${firstName}`;
+};
+
+const getPageInfo = (pathname: string, userName: string) => {
+  const currentDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+  
   switch (pathname) {
-    case '/app': return { title: 'Buenos días, Juan', eyebrow: 'MIÉRCOLES, 30 DE SEPTIEMBRE' };
+    case '/app': return { title: getGreeting(userName), eyebrow: currentDate };
     case '/app/movimientos': return { title: 'Movimientos', eyebrow: 'HISTORIAL' };
     case '/app/presupuesto': return { title: 'Presupuesto', eyebrow: 'CONTROL MENSUAL' };
     case '/app/metas': return { title: 'Mis metas', eyebrow: 'AHORRO' };
@@ -18,7 +30,7 @@ const getPageInfo = (pathname: string) => {
 export function Topbar() {
   const { user } = useAuthStore();
   const location = useLocation();
-  const { title, eyebrow } = getPageInfo(location.pathname);
+  const { title, eyebrow } = getPageInfo(location.pathname, user?.name || '');
 
   return (
     <header className="flex flex-col md:flex-row justify-between md:items-center mb-7 gap-5">

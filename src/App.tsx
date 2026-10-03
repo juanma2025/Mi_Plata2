@@ -12,6 +12,7 @@ import { Goals } from './pages/Goals';
 import { Analytics } from './pages/Analytics';
 import { AI } from './pages/AI';
 import { Profile } from './pages/Profile';
+import { Onboarding } from './pages/app/Onboarding';
 import { Toaster } from 'sonner';
 import { useAuthStore } from './store/useAuthStore';
 import { useEffect } from 'react';
@@ -44,6 +45,9 @@ function AppRoot() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
+
+        {/* Onboarding Route (Protected but isolated) */}
+        <Route path="/app/onboarding" element={<Onboarding />} />
 
         {/* Protected App Routes */}
         <Route path="/app" element={<AppLayout />}>

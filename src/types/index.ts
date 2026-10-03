@@ -24,7 +24,15 @@ export interface Budget {
 }
 
 export interface User {
+  id?: string;
   name: string;
   email: string;
-  initials: string;
+  initials?: string;
+  monthly_income?: number;
+  main_income_source?: string;
+  approximate_monthly_expenses?: number;
+  monthly_budget?: number;
+  savings_goal?: number;
+  main_expense_categories?: string[];
+  onboarding_completed?: boolean;
 }

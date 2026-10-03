@@ -4,10 +4,14 @@ import { Topbar } from '../components/Topbar';
 import { useAuthStore } from '../store/useAuthStore';
 
 export function AppLayout() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (user && user.onboarding_completed === false) {
+    return <Navigate to="/app/onboarding" replace />;
   }
 
   return (

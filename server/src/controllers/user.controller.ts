@@ -15,7 +15,7 @@ export async function getProfile(req: Request, res: Response) {
   try {
     const userService = await getUserService();
     const authReq = req as AuthenticatedRequest;
-    const profile = await userService.getProfile(authReq.user);
+    const profile = await userService.getProfile(authReq.user, authReq.accessToken);
     sendSuccess(res, profile);
   } catch (err) {
     sendError(res, (err as Error).message);
@@ -27,8 +27,20 @@ export async function updateProfile(req: Request, res: Response) {
   try {
     const userService = await getUserService();
     const authReq = req as AuthenticatedRequest;
-    const profile = await userService.updateProfile(authReq.user.id, req.body);
+    const profile = await userService.updateProfile(authReq.user.id, req.body, authReq.accessToken);
     sendSuccess(res, profile, 'Perfil actualizado exitosamente');
+  } catch (err) {
+    sendError(res, (err as Error).message);
+  }
+}
+
+// ─── POST /user/onboarding ──────────────────────────
+export async function saveOnboarding(req: Request, res: Response) {
+  try {
+    const userService = await getUserService();
+    const authReq = req as AuthenticatedRequest;
+    const profile = await userService.saveOnboarding(authReq.user.id, req.body, authReq.accessToken);
+    sendSuccess(res, profile, 'Configuración completada exitosamente');
   } catch (err) {
     sendError(res, (err as Error).message);
   }

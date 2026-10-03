@@ -1,12 +1,14 @@
-﻿import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { formatMoney } from '../utils/formatters';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export function Dashboard() {
   const { transactions } = useStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   const containerVariants = {
@@ -22,36 +24,46 @@ export function Dashboard() {
     show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 400, damping: 14 } }
   };
 
+  // Use user data or fallback to defaults
+  const income = user?.monthly_income || 2600000;
+  const expenses = user?.approximate_monthly_expenses || 755000;
+  const budget = user?.monthly_budget || 1500000;
+  const savingsGoal = user?.savings_goal || 500000;
+  
+  const balance = income - expenses;
+  const budgetRemaining = budget - expenses;
+  const budgetPercent = budget > 0 ? Math.round((budgetRemaining / budget) * 100) : 0;
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <motion.div variants={itemVariants}>
           <Card className="relative overflow-hidden min-h-[145px]">
             <div className="absolute w-[110px] h-[110px] rounded-full -right-[45px] -top-[45px] bg-[rgba(101,211,145,0.06)]" />
-            <div className="text-[13px] text-[var(--muted)]">Saldo disponible</div>
-            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(1845000)}</div>
+            <div className="text-[13px] text-[var(--muted)]">Saldo estimado</div>
+            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(balance)}</div>
             <div className="text-xs mt-3 text-[var(--green)] flex items-center gap-1"><ArrowUpRight size={14}/> 8,4% este mes</div>
           </Card>
         </motion.div>
         <motion.div variants={itemVariants}>
           <Card className="relative overflow-hidden min-h-[145px] h-full">
-            <div className="text-[13px] text-[var(--muted)]">Ingresos del mes</div>
-            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(2600000)}</div>
+            <div className="text-[13px] text-[var(--muted)]">Ingresos mensuales</div>
+            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(income)}</div>
             <div className="text-xs mt-3 text-[var(--green)] flex items-center gap-1"><ArrowUpRight size={14}/> 5,2%</div>
           </Card>
         </motion.div>
         <motion.div variants={itemVariants}>
           <Card className="relative overflow-hidden min-h-[145px] h-full">
-            <div className="text-[13px] text-[var(--muted)]">Gastos del mes</div>
-            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(755000)}</div>
-            <div className="text-xs mt-3 text-[var(--red)] flex items-center gap-1"><ArrowUpRight size={14}/> 3,1%</div>
+            <div className="text-[13px] text-[var(--muted)]">Gastos estimados</div>
+            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(expenses)}</div>
+            <div className="text-xs mt-3 text-[var(--red)] flex items-center gap-1"><ArrowDownRight size={14}/> 3,1%</div>
           </Card>
         </motion.div>
         <motion.div variants={itemVariants}>
           <Card className="relative overflow-hidden min-h-[145px] h-full">
             <div className="text-[13px] text-[var(--muted)]">Presupuesto restante</div>
-            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(945000)}</div>
-            <div className="text-xs mt-3 text-[var(--muted)]">64% disponible</div>
+            <div className="text-[28px] font-[750] mt-3.5 tracking-[-0.7px]">{formatMoney(budgetRemaining > 0 ? budgetRemaining : 0)}</div>
+            <div className="text-xs mt-3 text-[var(--muted)]">{budgetPercent > 0 ? budgetPercent : 0}% disponible</div>
           </Card>
         </motion.div>
       </div>
@@ -89,9 +101,9 @@ export function Dashboard() {
           </CardHeader>
           <div className="flex flex-col">
             {[
+              { name: 'Fondo de Ahorro', progress: savingsGoal > 0 ? Math.min(100, Math.round((balance * 0.2 / savingsGoal) * 100)) : 0, saved: balance > 0 ? balance * 0.2 : 0, total: savingsGoal },
               { name: 'MacBook', progress: 72, saved: 3600000, total: 5000000 },
               { name: 'Viaje', progress: 44, saved: 880000, total: 2000000 },
-              { name: 'Emergencias', progress: 31, saved: 620000, total: 2000000 },
             ].map((goal, i) => (
               <div key={i} className="py-3.5 border-b border-[var(--border)] last:border-0 hover:bg-[var(--panel2)] transition-colors px-3 -mx-3 rounded-lg cursor-pointer group">
                 <div className="flex justify-between gap-2.5 mb-2.5">

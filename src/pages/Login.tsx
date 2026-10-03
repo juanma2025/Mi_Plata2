@@ -12,7 +12,7 @@ export function Login() {
   const login = useAuthStore(state => state.login);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error('Por favor, completa todos los campos.');
@@ -20,13 +20,43 @@ export function Login() {
     }
     
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { authService } = await import('../services/api');
+      const response = await authService.post('/auth/login', { email, password });
+      
+      if (response.success) {
+        const { user: authUser, session } = response.data;
+        
+        // Save token (if you have token management, else handled by cookies/localStorage)
+        if (session?.access_token) {
+          localStorage.setItem('access_token', session.access_token);
+        }
+
+        // Fetch full profile to get onboarding data
+        const profileRes = await authService.get('/user/profile');
+        if (profileRes.success) {
+          const profile = profileRes.data;
+          login({ 
+            id: authUser.id,
+            name: profile.name || authUser.name || 'Usuario', 
+            email: authUser.email, 
+            initials: (profile.name || authUser.name || 'U').substring(0, 2).toUpperCase(),
+            ...profile
+          });
+        } else {
+          login({ id: authUser.id, name: authUser.name, email: authUser.email, initials: authUser.name?.substring(0,2).toUpperCase() || 'US' });
+        }
+        
+        toast.success('Bienvenido de nuevo');
+        navigate('/app');
+      } else {
+        toast.error(response.error || 'Credenciales inválidas');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Error al iniciar sesión');
+    } finally {
       setIsLoading(false);
-      login({ name: 'Juan Manuel', email: email, initials: 'JM' });
-      toast.success('Bienvenido de nuevo');
-      navigate('/app');
-    }, 1000);
+    }
   };
 
   return (
