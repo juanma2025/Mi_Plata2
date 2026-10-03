@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
 import { useAuthStore } from '../../store/useAuthStore';
-import { DollarSign, Wallet, Target, ChevronRight, ChevronLeft, PiggyBank, PieChart } from 'lucide-react';
+import { DollarSign, Wallet, Target, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Logo } from '../../components/ui/Logo';
 import { authService } from '../../services/api';
 
