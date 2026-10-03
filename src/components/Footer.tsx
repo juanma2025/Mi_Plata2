@@ -52,7 +52,7 @@ export function Footer() {
         <div className="pt-8 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[var(--muted)]">
           <p>© {new Date().getFullYear()} MiPlata. Todos los derechos reservados.</p>
           <div className="flex items-center gap-2 text-[var(--muted)]">
-            <p>Desarrollado por Alejandra Velasquez - v1.0.1</p>
+            <p>Desarrollado por Maria Alejandra Velasquez - v1.0.1</p>
           </div>
         </div>
       </div>
