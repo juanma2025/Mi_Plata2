@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { useAuthStore } from '../store/useAuthStore';
 import { toast } from 'sonner';
+import { authService } from '../services/api';
 
 export function Register() {
   const [name, setName] = useState('');
@@ -19,28 +20,27 @@ export function Register() {
       toast.error('Por favor, completa todos los campos.');
       return;
     }
-    
+
     setIsLoading(true);
     try {
-      const { authService } = await import('../services/api');
       const response = await authService.post('/auth/register', { name, email, password });
-      
+
       if (response.success) {
         const { user: authUser, session } = response.data;
-        
+
         if (session?.access_token) {
           localStorage.setItem('access_token', session.access_token);
         }
 
         // On register, onboarding_completed is false by default
-        login({ 
-          id: authUser.id, 
-          name: authUser.name, 
-          email: authUser.email, 
-          initials: authUser.name?.substring(0,2).toUpperCase() || 'US',
+        login({
+          id: authUser.id,
+          name: authUser.name,
+          email: authUser.email,
+          initials: authUser.name?.substring(0, 2).toUpperCase() || 'US',
           onboarding_completed: false
         });
-        
+
         toast.success('Cuenta creada exitosamente');
         navigate('/app/onboarding');
       } else {
@@ -59,27 +59,27 @@ export function Register() {
       <p className="text-[var(--muted)] mb-8">Únete a MiPlata y toma el control de tus finanzas.</p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Input 
-          label="Nombre completo" 
-          placeholder="Juan Manuel" 
+        <Input
+          label="Nombre completo"
+          placeholder="Nombre de usuario"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Input 
-          label="Correo electrónico" 
-          type="email" 
-          placeholder="juan@email.com" 
+        <Input
+          label="Correo electrónico"
+          type="email"
+          placeholder="example@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input 
-          label="Contraseña" 
-          type="password" 
-          placeholder="••••••••" 
+        <Input
+          label="Contraseña"
+          type="password"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        
+
         <Button type="submit" className="w-full mt-4" isLoading={isLoading}>
           Crear cuenta
         </Button>

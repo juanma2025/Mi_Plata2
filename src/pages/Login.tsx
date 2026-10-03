@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { useAuthStore } from '../store/useAuthStore';
 import { toast } from 'sonner';
+import { authService } from '../services/api';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -21,7 +22,6 @@ export function Login() {
     
     setIsLoading(true);
     try {
-      const { authService } = await import('../services/api');
       const response = await authService.post('/auth/login', { email, password });
       
       if (response.success) {
