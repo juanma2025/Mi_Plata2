@@ -6,9 +6,9 @@ Este documento contiene la documentación completa del proyecto **MiPlata**, des
 
 ## 1. Datos del Estudiante
 
-- **Nombre Completo:** [ESCRIBE AQUÍ TU NOMBRE COMPLETO, ej: Juan Manuel...]
-- **Semestre:** [ESCRIBE AQUÍ TU SEMESTRE]
-- **Asignatura:** Contexto de la Ingeniería de Software
+- **Nombre Completo:Maria Alejandra Velasquez 
+- **Semestre:primer semestre 
+- **Asignatura:Contexto de la Ingeniería de Software
 - **Proyecto:** MiPlata (Aplicación Web Financiera)
 
 ---
