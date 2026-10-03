@@ -48,32 +48,16 @@ app.use(notFoundHandler);
 // ─── Global Error Handler ───────────────────────────
 app.use(errorHandler);
 
-// ─── Start Server ───────────────────────────────────
-app.listen(env.PORT, () => {
-  logger.info(`🚀 MiPlata Server running`, {
-    port: env.PORT,
-    environment: env.NODE_ENV,
-    cors: env.CORS_ORIGIN,
+// ─── Start Server (Only for local dev or traditional hosting) ───
+if (process.env.NODE_ENV !== 'production' || process.env.IS_LOCAL) {
+  app.listen(env.PORT, () => {
+    logger.info(`🚀 MiPlata Server running`, {
+      port: env.PORT,
+      environment: env.NODE_ENV,
+      cors: env.CORS_ORIGIN,
+    });
+    logger.info('📡 API available at: /api/v1');
   });
-  logger.info('📡 API available at: /api/v1');
-  logger.info('Endpoints:');
-  logger.info('  POST   /api/v1/auth/register');
-  logger.info('  POST   /api/v1/auth/login');
-  logger.info('  POST   /api/v1/auth/logout');
-  logger.info('  POST   /api/v1/auth/forgot-password');
-  logger.info('  POST   /api/v1/auth/reset-password');
-  logger.info('  POST   /api/v1/auth/refresh');
-  logger.info('  POST   /api/v1/auth/mfa/enroll');
-  logger.info('  POST   /api/v1/auth/mfa/challenge');
-  logger.info('  POST   /api/v1/auth/mfa/verify');
-  logger.info('  POST   /api/v1/auth/mfa/unenroll');
-  logger.info('  GET    /api/v1/auth/mfa/factors');
-  logger.info('  GET    /api/v1/auth/mfa/assurance-level');
-  logger.info('  GET    /api/v1/user/profile');
-  logger.info('  PATCH  /api/v1/user/profile');
-  logger.info('  DELETE /api/v1/user/account');
-  logger.info('  POST   /api/v1/chat');
-  logger.info('  GET    /api/v1/health');
-});
+}
 
 export default app;
