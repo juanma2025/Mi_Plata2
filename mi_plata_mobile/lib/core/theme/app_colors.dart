@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Light Mode Colors
-  static const Color lightBg = Color(0xFFFFFFFF);
-  static const Color lightPanel = Color(0xFFF8FAFC);
-  static const Color lightPanel2 = Color(0xFFF1F5F9);
-  static const Color lightBorder = Color(0xFFE2E8F0);
-  static const Color lightText = Color(0xFF0F172A);
-  static const Color lightTextMuted = Color(0xFF64748B);
-  static const Color lightGreen = Color(0xFF10B981);
-  static const Color lightGreen2 = Color(0xFF059669);
-  static const Color lightRed = Color(0xFFEF4444);
-  static const Color lightYellow = Color(0xFFF59E0B);
+  // Brand
+  static const Color accent = Color(0xFF05F29B);
+  static const Color accentDark = Color(0xFF03B875);
+  static const Color accentLight = Color(0xFF42FFB7);
+  static const Color danger = Color(0xFFFF4D4D);
 
-  // Dark Mode Colors
-  static const Color darkBg = Color(0xFF101211);
-  static const Color darkPanel = Color(0xFF171A18);
-  static const Color darkPanel2 = Color(0xFF1D211F);
-  static const Color darkBorder = Color(0xFF2B302D);
-  static const Color darkText = Color(0xFFF2F4F2);
-  static const Color darkTextMuted = Color(0xFF929B95);
-  static const Color darkGreen = Color(0xFF65D391);
-  static const Color darkGreen2 = Color(0xFF3CA96A);
-  static const Color darkRed = Color(0xFFEF7373);
-  static const Color darkYellow = Color(0xFFE5C66D);
+  // Graphite / Dark Theme
+  static const Color graphite900 = Color(0xFF101014); // Fondo principal
+  static const Color graphite800 = Color(0xFF18181D); // Superficies
+  static const Color graphite700 = Color(0xFF222229); // Tarjetas
+  static const Color graphite600 = Color(0xFF2D2D36); // Bordes
+
+  // Text
+  static const Color textWhite = Color(0xFFFFFFFF);
+  static const Color textGray200 = Color(0xFFE5E7EB);
+  static const Color textGray400 = Color(0xFF9CA3AF);
+  static const Color textGray500 = Color(0xFF6B7280);
+  static const Color textGray600 = Color(0xFF4B5563);
+
+  // Transparent / Opacity
+  static const Color accentGlow = Color(0x2605F29B); // 15% opacity
+  static const Color dangerGlow = Color(0x1AFF4D4D); // 10% opacity
 }

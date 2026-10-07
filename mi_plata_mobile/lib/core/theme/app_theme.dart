@@ -1,49 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
+    // Keeping a light theme variant, but main focus is dark mode.
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: AppColors.lightGreen,
-      scaffoldBackgroundColor: AppColors.lightBg,
+      primaryColor: AppColors.accent,
+      scaffoldBackgroundColor: const Color(0xFFF8FAFC),
       colorScheme: const ColorScheme.light(
-        primary: AppColors.lightGreen,
-        secondary: AppColors.lightYellow,
-        surface: AppColors.lightPanel,
-        error: AppColors.lightRed,
-        onPrimary: Colors.white,
-        onSecondary: Colors.black,
-        onSurface: AppColors.lightText,
-        onError: Colors.white,
+        primary: AppColors.accentDark,
+        secondary: AppColors.accent,
+        surface: Colors.white,
+        error: AppColors.danger,
       ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).copyWith(
-        bodyLarge: const TextStyle(color: AppColors.lightText),
-        bodyMedium: const TextStyle(color: AppColors.lightTextMuted),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.lightBg,
-        elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.lightText),
-        titleTextStyle: TextStyle(
-          color: AppColors.lightText,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.lightPanel,
-        selectedItemColor: AppColors.lightGreen,
-        unselectedItemColor: AppColors.lightTextMuted,
-        elevation: 8,
-      ),
+      fontFamily: 'Inter',
+      textTheme: ThemeData.light().textTheme.apply(fontFamily: 'Inter'),
       cardTheme: CardThemeData(
-        color: AppColors.lightPanel,
+        color: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.lightBorder),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0xFFE2E8F0)),
         ),
       ),
     );
@@ -52,45 +30,85 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: AppColors.darkGreen,
-      scaffoldBackgroundColor: AppColors.darkBg,
+      primaryColor: AppColors.accent,
+      scaffoldBackgroundColor: AppColors.graphite900,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.darkGreen,
-        secondary: AppColors.darkYellow,
-        surface: AppColors.darkPanel,
-        error: AppColors.darkRed,
-        onPrimary: Colors.black,
-        onSecondary: Colors.black,
-        onSurface: AppColors.darkText,
-        onError: Colors.white,
+        primary: AppColors.accent,
+        secondary: AppColors.accentLight,
+        surface: AppColors.graphite800,
+        error: AppColors.danger,
+        onPrimary: AppColors.graphite900,
+        onSurface: AppColors.textWhite,
       ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-        bodyLarge: const TextStyle(color: AppColors.darkText),
-        bodyMedium: const TextStyle(color: AppColors.darkTextMuted),
+      fontFamily: 'Inter',
+      textTheme: ThemeData.dark().textTheme.apply(fontFamily: 'Inter').copyWith(
+        bodyLarge: const TextStyle(fontFamily: 'Inter', color: AppColors.textWhite),
+        bodyMedium: const TextStyle(fontFamily: 'Inter', color: AppColors.textGray400),
+        titleLarge: const TextStyle(fontFamily: 'Inter', color: AppColors.textWhite, fontWeight: FontWeight.bold),
+        titleMedium: const TextStyle(fontFamily: 'Inter', color: AppColors.textWhite, fontWeight: FontWeight.w600),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.darkBg,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.darkText),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: AppColors.textWhite),
         titleTextStyle: TextStyle(
-          color: AppColors.darkText,
-          fontSize: 20,
+          color: AppColors.textWhite,
+          fontSize: 18,
           fontWeight: FontWeight.w600,
+          fontFamily: 'Inter',
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.darkPanel,
-        selectedItemColor: AppColors.darkGreen,
-        unselectedItemColor: AppColors.darkTextMuted,
-        elevation: 8,
+        backgroundColor: AppColors.graphite800, // Or blur effect in UI
+        selectedItemColor: AppColors.accent,
+        unselectedItemColor: AppColors.textGray400,
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+        unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.darkPanel,
+        color: AppColors.graphite800,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.graphite700),
         ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.accent,
+          foregroundColor: AppColors.graphite900,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.graphite800,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.graphite700),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.graphite700),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.accent),
+        ),
+        hintStyle: const TextStyle(color: AppColors.textGray500),
+        labelStyle: const TextStyle(color: AppColors.textGray400),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.graphite700,
+        thickness: 1,
+        space: 1,
       ),
     );
   }

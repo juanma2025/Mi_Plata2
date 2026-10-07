@@ -53,11 +53,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Mi Plata',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.account_balance_wallet, color: Theme.of(context).primaryColor),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'MiPlata',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Controla tu dinero.\nEntiende tus hábitos.\nConstruye tus metas.',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  height: 1.2,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -66,32 +101,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Correo electrónico',
-                  border: OutlineInputBorder(),
+                  hintText: 'ejemplo@correo.com',
                 ),
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
+                style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
+                  hintText: '••••••••',
                 ),
                 obscureText: true,
+                style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
                 child: _isLoading 
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('Ingresar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Text('Iniciar sesión'),
               ),
               const SizedBox(height: 24),
               Row(

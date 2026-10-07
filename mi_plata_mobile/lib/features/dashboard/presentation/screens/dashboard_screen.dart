@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/services/supabase_service.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
+import '../../../transactions/presentation/screens/transactions_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -17,27 +20,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   final List<Widget> _pages = [
     const _HomeTab(),
-    const Center(child: Text('Finanzas')),
+    const TransactionsScreen(),
     const Center(child: Text('PLATA IA')),
     const Center(child: Text('Actividad')),
-    const Center(child: Text('Perfil')),
+    const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(LucideIcons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.pieChart), label: 'Finanzas'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.bot), label: 'PLATA IA'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.activity), label: 'Actividad'),
-          BottomNavigationBarItem(icon: Icon(LucideIcons.user), label: 'Perfil'),
-        ],
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.graphite700, width: 1)),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: AppColors.graphite900,
+          selectedItemColor: AppColors.accent,
+          unselectedItemColor: AppColors.textGray400,
+          elevation: 0,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(LucideIcons.home), label: 'Inicio'),
+            BottomNavigationBarItem(icon: Icon(LucideIcons.list), label: 'Movs'),
+            BottomNavigationBarItem(icon: Icon(LucideIcons.bot), label: 'IA'),
+            BottomNavigationBarItem(icon: Icon(LucideIcons.pieChart), label: 'Análisis'),
+            BottomNavigationBarItem(icon: Icon(LucideIcons.user), label: 'Perfil'),
+          ],
+        ),
       ),
     );
   }
