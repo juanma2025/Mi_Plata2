@@ -4,29 +4,44 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/services/supabase_service.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _login() async {
+  Future<void> _register() async {
+    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, completa todos los campos.')));
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
       final supabase = ref.read(supabaseProvider);
-      await supabase.auth.signInWithPassword(
+      await supabase.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+        data: {'name': _nameController.text.trim()},
       );
-      // Router will automatically redirect to dashboard due to state change
+      
       if (mounted) {
-        context.go('/dashboard');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cuenta creada exitosamente')));
+        // Router handles redirection based on auth state change (if auto-login works)
+        // Or we can manually go to dashboard if session exists
+        if (supabase.auth.currentSession != null) {
+          context.go('/dashboard');
+        } else {
+          // If requires email confirmation, go to login
+          context.go('/login');
+        }
       }
     } on AuthException catch (e) {
       if (mounted) {
@@ -34,7 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de autenticación')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al crear la cuenta')));
       }
     } finally {
       if (mounted) {
@@ -47,21 +62,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 48),
               Text(
-                'Mi Plata',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  color: Theme.of(context).primaryColor,
+                'Crear cuenta',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 8),
+              Text(
+                'Únete a MiPlata y toma el control de tus finanzas.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 32),
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre completo',
+                  border: OutlineInputBorder(),
+                ),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -82,7 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _isLoading ? null : _login,
+                onPressed: _isLoading ? null : _register,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).primaryColor,
@@ -91,17 +118,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 child: _isLoading 
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('Ingresar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    : const Text('Crear cuenta', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('¿No tienes cuenta? ', style: Theme.of(context).textTheme.bodyMedium),
+                  Text('¿Ya tienes una cuenta? ', style: Theme.of(context).textTheme.bodyMedium),
                   GestureDetector(
-                    onTap: () => context.go('/register'),
+                    onTap: () => context.go('/login'),
                     child: Text(
-                      'Regístrate',
+                      'Inicia sesión',
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
