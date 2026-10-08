@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class TransactionModel {
   final String id;
@@ -26,26 +27,47 @@ class TransactionModel {
       'amount': amount,
       'category': category,
       'date': date.toIso8601String(),
-      'iconCodePoint': icon.codePoint,
-      'iconFontFamily': icon.fontFamily,
-      'iconFontPackage': icon.fontPackage,
-      'iconColorValue': iconColor.value,
     };
   }
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    final cat = json['category'] as String? ?? 'Otros';
     return TransactionModel(
       id: json['id'],
       title: json['title'],
       amount: json['amount'],
-      category: json['category'],
+      category: cat,
       date: DateTime.parse(json['date']),
-      icon: IconData(
-        json['iconCodePoint'],
-        fontFamily: json['iconFontFamily'],
-        fontPackage: json['iconFontPackage'],
-      ),
-      iconColor: Color(json['iconColorValue']),
+      icon: _getIconForCategory(cat),
+      iconColor: _getColorForCategory(cat),
     );
+  }
+
+  static IconData _getIconForCategory(String category) {
+    switch (category) {
+      case 'Comida': return LucideIcons.coffee;
+      case 'Transporte': return LucideIcons.bus;
+      case 'Entretenimiento': return LucideIcons.tv;
+      case 'Servicios': return LucideIcons.zap;
+      case 'Salario': return LucideIcons.wallet;
+      case 'Inversiones': return LucideIcons.trendingUp;
+      case 'Ventas': return LucideIcons.shoppingBag;
+      case 'Regalos': return LucideIcons.gift;
+      default: return LucideIcons.circle;
+    }
+  }
+
+  static Color _getColorForCategory(String category) {
+    switch (category) {
+      case 'Comida': return Colors.orange;
+      case 'Transporte': return Colors.blue;
+      case 'Entretenimiento': return Colors.purple;
+      case 'Servicios': return Colors.yellow;
+      case 'Salario': return Colors.green;
+      case 'Inversiones': return Colors.teal;
+      case 'Ventas': return Colors.indigo;
+      case 'Regalos': return Colors.pink;
+      default: return Colors.grey;
+    }
   }
 }
