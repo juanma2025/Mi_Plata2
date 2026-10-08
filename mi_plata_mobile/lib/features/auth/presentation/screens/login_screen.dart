@@ -34,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de autenticación')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de autenticación. Verifica tus credenciales.')));
       }
     } finally {
       if (mounted) {

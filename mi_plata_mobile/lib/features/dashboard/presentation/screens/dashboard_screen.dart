@@ -7,6 +7,7 @@ import '../../../../core/services/supabase_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../transactions/presentation/screens/transactions_screen.dart';
+import 'plata_ia_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -21,7 +22,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   final List<Widget> _pages = [
     const _HomeTab(),
     const TransactionsScreen(),
-    const Center(child: Text('PLATA IA')),
+    const PlataIaScreen(),
     const Center(child: Text('Actividad')),
     const ProfileScreen(),
   ];
