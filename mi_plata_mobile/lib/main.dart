@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
@@ -28,7 +29,7 @@ class MiPlataApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Support for system light/dark mode
+      themeMode: ref.watch(themeModeProvider), // Dinámico: sistema o manual
       routerConfig: router,
     );
   }

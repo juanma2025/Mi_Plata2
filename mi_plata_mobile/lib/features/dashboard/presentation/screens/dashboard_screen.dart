@@ -7,7 +7,10 @@ import '../../../../core/services/supabase_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../transactions/presentation/screens/transactions_screen.dart';
+import '../../../../core/theme/theme_provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'plata_ia_screen.dart';
+import '../../../analysis/presentation/screens/analysis_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -23,14 +26,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     const _HomeTab(),
     const TransactionsScreen(),
     const PlataIaScreen(),
-    const Center(child: Text('Actividad')),
+    const AnalysisScreen(),
     const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+        child: _pages[_currentIndex],
+      ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: AppColors.graphite700, width: 1)),
@@ -68,14 +75,31 @@ class _HomeTab extends ConsumerWidget {
     final supabase = ref.watch(supabaseProvider);
     final user = supabase.auth.currentUser;
 
-    // Default mock data (since we aren't fetching yet)
-    const double income = 2600000;
-    const double expenses = 755000;
-    const double budget = 1500000;
+    final metadata = user?.userMetadata ?? {};
+
+    // Cargar datos financieros configurados en el onboarding
+    final double income = (metadata['monthly_income'] as num?)?.toDouble() ?? 0.0;
+    final double expenses = (metadata['monthly_expenses'] as num?)?.toDouble() ?? 0.0;
+    final double budget = (metadata['monthly_budget'] as num?)?.toDouble() ?? 0.0;
+    final double savingsGoal = (metadata['savings_goal'] as num?)?.toDouble() ?? 0.0;
     
-    const double balance = income - expenses;
-    const double budgetRemaining = budget - expenses;
+    // Cálculos financieros inteligentes
+    final double balance = income - expenses;
+    final double recommendedSavings = income * 0.20; // Sugerencia: 20% del ingreso
+    final double budgetRemaining = budget - expenses;
     final int budgetPercent = budget > 0 ? ((budgetRemaining / budget) * 100).round() : 0;
+    final double savingsPercentage = income > 0 ? (balance / income) * 100 : 0;
+
+    // Saludo dinámico según la hora local
+    String greeting = 'Hola';
+    final hour = DateTime.now().hour;
+    if (hour >= 5 && hour < 12) {
+      greeting = 'Buenos días';
+    } else if (hour >= 12 && hour < 19) {
+      greeting = 'Buenas tardes';
+    } else {
+      greeting = 'Buenas noches';
+    }
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -90,23 +114,37 @@ class _HomeTab extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hola,',
+                      '$greeting,',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Text(
-                      user?.userMetadata?['name'] ?? user?.email ?? 'Usuario',
+                      user?.userMetadata?['name'] ?? user?.userMetadata?['first_name'] ?? 'Usuario',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(LucideIcons.logOut),
-                  onPressed: () async {
-                    await supabase.auth.signOut();
-                    if (context.mounted) {
-                      context.go('/login');
-                    }
-                  },
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Theme.of(context).brightness == Brightness.dark 
+                            ? LucideIcons.sun 
+                            : LucideIcons.moon,
+                      ),
+                      onPressed: () {
+                        ref.read(themeModeProvider.notifier).toggleTheme();
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(LucideIcons.logOut),
+                      onPressed: () async {
+                        await supabase.auth.signOut();
+                        if (context.mounted) {
+                          context.go('/login');
+                        }
+                      },
+                    ),
+                  ],
                 )
               ],
             ),
@@ -121,12 +159,12 @@ class _HomeTab extends ConsumerWidget {
               crossAxisSpacing: 12,
               childAspectRatio: 1.1,
               children: [
-                _buildStatCard(context, 'Saldo estimado', formatMoney(balance), '8.4% este mes', true),
-                _buildStatCard(context, 'Ingresos mensuales', formatMoney(income), '5.2%', true),
-                _buildStatCard(context, 'Gastos estimados', formatMoney(expenses), '3.1%', false),
+                _buildStatCard(context, 'Disponible para ahorrar', formatMoney(balance), '${savingsPercentage.toStringAsFixed(1)}% de tu ingreso', true),
+                _buildStatCard(context, 'Ahorro recomendado (20%)', formatMoney(recommendedSavings), 'Ideal', true),
+                _buildStatCard(context, 'Gastos estimados', formatMoney(expenses), 'Planificado', false),
                 _buildStatCard(context, 'Presupuesto restante', formatMoney(budgetRemaining > 0 ? budgetRemaining : 0), '$budgetPercent% disponible', null),
               ],
-            ),
+            ).animate().fade(duration: 400.ms).slideY(begin: 0.1, curve: Curves.easeOutQuad),
             const SizedBox(height: 16),
 
             // EVOLUCIÓN FINANCIERA
@@ -145,19 +183,19 @@ class _HomeTab extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildBar(context, 45, 'Abr', false),
-                          _buildBar(context, 58, 'May', false),
-                          _buildBar(context, 51, 'Jun', false),
-                          _buildBar(context, 68, 'Jul', false),
-                          _buildBar(context, 77, 'Ago', false),
-                          _buildBar(context, 88, 'Sep', true),
+                          _buildBar(context, 45, 'Abr', false).animate(delay: 100.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
+                          _buildBar(context, 58, 'May', false).animate(delay: 200.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
+                          _buildBar(context, 51, 'Jun', false).animate(delay: 300.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
+                          _buildBar(context, 68, 'Jul', false).animate(delay: 400.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
+                          _buildBar(context, 77, 'Ago', false).animate(delay: 500.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
+                          _buildBar(context, 88, 'Sep', true).animate(delay: 600.ms).scaleY(begin: 0, alignment: Alignment.bottomCenter),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ).animate().fade(delay: 200.ms).slideX(begin: 0.05),
             const SizedBox(height: 16),
 
             // METAS DE AHORRO
@@ -175,15 +213,11 @@ class _HomeTab extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    _buildGoalRow(context, 'Fondo de Ahorro', 73, 365000, 500000),
-                    const Divider(height: 24),
-                    _buildGoalRow(context, 'MacBook', 72, 3600000, 5000000),
-                    const Divider(height: 24),
-                    _buildGoalRow(context, 'Viaje', 44, 880000, 2000000),
+                    _buildGoalRow(context, 'Fondo de Ahorro', 73, savingsGoal * 0.73, savingsGoal > 0 ? savingsGoal : 500000),
                   ],
                 ),
               ),
-            ),
+            ).animate().fade(delay: 300.ms).slideX(begin: 0.05),
             const SizedBox(height: 16),
 
             // MOVIMIENTOS RECIENTES
@@ -209,7 +243,7 @@ class _HomeTab extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
+            ).animate().fade(delay: 400.ms).slideY(begin: 0.1),
             const SizedBox(height: 24),
           ],
         ),

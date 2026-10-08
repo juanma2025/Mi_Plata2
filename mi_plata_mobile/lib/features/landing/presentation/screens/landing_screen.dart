@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -139,25 +140,8 @@ class LandingScreen extends StatelessWidget {
 
               const SizedBox(height: 48),
 
-              // INTEGRATIONS
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Integración con: ', style: TextStyle(color: AppColors.textGray500, fontSize: 12)),
-                    const SizedBox(width: 8),
-                    _buildIntegrationBadge('Nequi'),
-                    const SizedBox(width: 8),
-                    _buildIntegrationBadge('Bancolombia'),
-                    const SizedBox(width: 8),
-                    _buildIntegrationBadge('Daviplata'),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 64),
-
+              const SizedBox(height: 16),
+              
               // FEATURES
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -176,6 +160,14 @@ class LandingScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
+
+                    // Feature 0 (What is MiPlata?)
+                    _buildFeatureCard(
+                      icon: LucideIcons.wallet,
+                      iconColor: AppColors.accent,
+                      title: '¿Qué es MiPlata?',
+                      description: 'Es una aplicación móvil de gestión de finanzas personales que te permite llevar un control estricto de tus ingresos y gastos, establecer metas y visualizar reportes interactivos.',
+                    ).animate().fade(duration: 400.ms).slideY(begin: 0.1),
 
                     // Feature 1
                     _buildFeatureCard(
@@ -263,7 +255,7 @@ class LandingScreen extends StatelessWidget {
                       iconColor: Colors.white,
                       title: 'Seguridad de Grado Bancario',
                       description: 'Tus credenciales están encriptadas con cifrado AES-256 de extremo a extremo.',
-                    ),
+                    ).animate().fade(duration: 400.ms, delay: 400.ms).slideY(begin: 0.1),
                   ],
                 ),
               ),
@@ -311,8 +303,8 @@ class LandingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 32),
                     const Text(
-                      '© 2026 MiPlata. Todos los derechos reservados.\nDesarrollado con cariño para ti.',
-                      style: TextStyle(color: AppColors.textGray500, fontSize: 10, height: 1.5),
+                      '© 2026 MiPlata. Todos los derechos reservados.\nDesarrollado por Maria Alejandra Velasquez\nVersión 1.0.1',
+                      style: TextStyle(color: AppColors.textGray500, fontSize: 11, height: 1.5),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -325,17 +317,6 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIntegrationBadge(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.graphite800,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: AppColors.graphite700),
-      ),
-      child: Text(text, style: const TextStyle(color: AppColors.textGray200, fontSize: 10, fontWeight: FontWeight.bold)),
-    );
-  }
 
   Widget _buildFeatureCard({
     required IconData icon,

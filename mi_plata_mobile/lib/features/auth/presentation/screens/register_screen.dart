@@ -47,13 +47,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         return;
       }
 
-      // Registro exitoso: redirigir al login
+      // Registro exitoso: redirigir a onboarding
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Cuenta creada exitosamente. Por favor, inicia sesión.'),
+          content: Text('¡Cuenta creada exitosamente!'),
           backgroundColor: Colors.green,
         ));
-        context.go('/login');
+        context.go('/app/onboarding');
       }
 
     } on AuthException catch (e) {

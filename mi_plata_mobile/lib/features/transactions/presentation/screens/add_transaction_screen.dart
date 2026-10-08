@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../models/transaction_model.dart';
+import '../../providers/transactions_provider.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/theme/app_colors.dart';
 
-class AddTransactionScreen extends StatefulWidget {
+class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
 
   @override
-  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
+  ConsumerState<AddTransactionScreen> createState() => _AddTransactionScreenState();
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen> {
+class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   bool isExpense = true;
   String category = 'Comida y Domicilios';
 
@@ -23,6 +28,34 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   ];
   final amountController = TextEditingController();
   final descController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
+
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.accent,
+              onPrimary: AppColors.graphite900,
+              surface: AppColors.graphite800,
+              onSurface: Colors.white,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,9 +224,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 8),
               TextField(
                 readOnly: true,
+                onTap: _pickDate,
+                controller: TextEditingController(text: DateFormat('yyyy-MM-dd').format(_selectedDate)),
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 decoration: const InputDecoration(
-                  hintText: '2026-09-30', // Mock
                   suffixIcon: Icon(LucideIcons.calendar, color: AppColors.textGray400),
                 ),
               ),
@@ -201,7 +235,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
               ElevatedButton(
                 onPressed: () {
-                  // Mock save
+                  final amount = double.tryParse(amountController.text) ?? 0;
+                  if (amount <= 0) return;
+
+                  final categoryEntry = _categories.firstWhere((c) => c.key == category);
+                  final desc = descController.text.trim();
+
+                  final newTransaction = TransactionModel(
+                    id: const Uuid().v4(),
+                    title: desc.isEmpty ? category : desc,
+                    amount: isExpense ? -amount : amount,
+                    category: category,
+                    date: _selectedDate,
+                    icon: categoryEntry.value,
+                    iconColor: isExpense ? Colors.orange : AppColors.accent, // Simplified color map for demo
+                  );
+
+                  ref.read(transactionsProvider.notifier).addTransaction(newTransaction);
                   context.pop();
                 },
                 child: const Text('Guardar Movimiento'),

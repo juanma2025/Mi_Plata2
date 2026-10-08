@@ -17,12 +17,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, ingresa tu correo y contraseña.')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
       final supabase = ref.read(supabaseProvider);
       await supabase.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
       );
       // Router will automatically redirect to dashboard due to state change
       if (mounted) {

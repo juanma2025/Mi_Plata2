@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../providers/profile_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -40,21 +41,31 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      'https://i.pravatar.cc/150?u=${user?.id ?? "default"}',
-                      fit: BoxFit.cover,
+                    child: Container(
+                      color: AppColors.graphite800,
+                      child: ref.watch(profileImageProvider) != null
+                          ? Image.network(ref.watch(profileImageProvider)!, fit: BoxFit.cover)
+                          : Center(
+                              child: Text(
+                                userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                                style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: AppColors.textGray400),
+                              ),
+                            ),
                     ),
                   ),
                 ),
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: AppColors.graphite700,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.graphite600),
+                GestureDetector(
+                  onTap: () => context.push('/profile/edit'),
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppColors.graphite700,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.graphite600),
+                    ),
+                    child: const Icon(LucideIcons.pencil, size: 16, color: Colors.white),
                   ),
-                  child: const Icon(LucideIcons.pencil, size: 16, color: Colors.white),
                 ),
               ],
             ),
@@ -82,20 +93,20 @@ class ProfileScreen extends ConsumerWidget {
                   _buildSettingsItem(
                     icon: LucideIcons.settings,
                     title: 'Configuración de la App',
-                    onTap: () {},
+                    onTap: () => context.push('/profile/settings'),
                   ),
-                  const Divider(height: 1, indent: 56),
+                  const Divider(height: 1, indent: 56, color: AppColors.graphite700),
                   _buildSettingsItem(
                     icon: LucideIcons.creditCard,
                     title: 'Cuentas Conectadas',
                     badge: '2',
-                    onTap: () {},
+                    onTap: () => context.push('/profile/accounts'),
                   ),
-                  const Divider(height: 1, indent: 56),
+                  const Divider(height: 1, indent: 56, color: AppColors.graphite700),
                   _buildSettingsItem(
                     icon: LucideIcons.downloadCloud,
                     title: 'Exportar Datos (CSV)',
-                    onTap: () {},
+                    onTap: () => context.push('/profile/export'),
                   ),
                 ],
               ),
@@ -114,13 +125,13 @@ class ProfileScreen extends ConsumerWidget {
                   _buildSettingsItem(
                     icon: LucideIcons.shieldCheck,
                     title: 'Privacidad y Seguridad',
-                    onTap: () {},
+                    onTap: () => context.push('/profile/privacy'),
                   ),
-                  const Divider(height: 1, indent: 56),
+                  const Divider(height: 1, indent: 56, color: AppColors.graphite700),
                   _buildSettingsItem(
                     icon: LucideIcons.helpCircle,
                     title: 'Centro de Ayuda',
-                    onTap: () {},
+                    onTap: () => context.push('/profile/help'),
                   ),
                 ],
               ),

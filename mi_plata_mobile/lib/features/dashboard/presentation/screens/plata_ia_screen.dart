@@ -17,7 +17,7 @@ class _PlataIaScreenState extends ConsumerState<PlataIaScreen> {
   final List<Map<String, String>> _messages = [
     {
       'sender': 'ai',
-      'text': '¡Hola! Soy Plata IA, tu asistente financiero personal. ¿En qué te puedo ayudar hoy con tu dinero o presupuesto?',
+      'text': '¡Hola! Soy Plata IA, tu asistente financiero personal.\n\n🚧 Actualmente me encuentro en proceso de desarrollo y entrenamiento. Pronto estaré disponible para ayudarte a organizar tu dinero y presupuesto. ¡Vuelve más tarde!',
     }
   ];
   bool _isLoading = false;
@@ -92,6 +92,24 @@ class _PlataIaScreenState extends ConsumerState<PlataIaScreen> {
                     Text('Plata IA', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
                     Text('Tu asistente financiero', style: TextStyle(fontSize: 12, color: AppColors.textGray400)),
                   ],
+                ),
+              ],
+            ),
+          ),
+          
+          // Development Banner
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            color: Colors.amber.withOpacity(0.2),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(LucideIcons.construction, color: Colors.amber, size: 16),
+                SizedBox(width: 8),
+                Text(
+                  'Módulo en desarrollo',
+                  style: TextStyle(color: Colors.amber, fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -174,33 +192,33 @@ class _PlataIaScreenState extends ConsumerState<PlataIaScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    style: const TextStyle(color: Colors.white),
+                    enabled: false,
+                    style: const TextStyle(color: Colors.white70),
                     decoration: InputDecoration(
-                      hintText: 'Pregúntale algo a tu asistente...',
+                      hintText: 'Chatbot en mantenimiento...',
                       hintStyle: const TextStyle(color: AppColors.textGray500),
                       filled: true,
-                      fillColor: AppColors.graphite800,
+                      fillColor: AppColors.graphite800.withOpacity(0.5),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 const SizedBox(width: 8),
                 GestureDetector(
-                  onTap: _isLoading ? null : _sendMessage,
+                  onTap: null,
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _isLoading ? AppColors.graphite700 : AppColors.accent,
+                      color: AppColors.graphite700,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       LucideIcons.send,
-                      color: _isLoading ? AppColors.textGray500 : AppColors.graphite900,
+                      color: AppColors.textGray500,
                       size: 20,
                     ),
                   ),
